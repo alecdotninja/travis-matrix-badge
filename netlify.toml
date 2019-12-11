@@ -3,4 +3,4 @@ redirects = [
 ]
 
 [build]
-functions = "functions"
+  functions = "./functions"
