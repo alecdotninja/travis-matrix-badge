@@ -18,5 +18,8 @@
     "scripts": {
         "dev": "netlify-lambda serve functions",
         "build": "netlify-lambda build functions"
+    },
+    "dependencies": {
+        "node-fetch": "^2.6.0"
     }
 }
