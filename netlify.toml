@@ -1,7 +1,14 @@
-redirects = [
-  { from = "/", to = "https://github.com/alecdotninja/travis-matrix-badge", status = 302 },
-  { from = "/hello", to = "/.netlify/functions/hello", query = { name = ":name"}, status = 200 }
-]
+[[redirects]]
+	from = "/"
+	to = "https://github.com/alecdotninja/travis-matrix-badge"
+	status = 302
+
+[[redirects]]
+	from = "/hello"
+	to = "/.netlify/functions/hello"
+	query = { name = ":name" }
+	status = 200
 
 [build]
-  functions = "./functions"
+	command = "npm run build"
+	functions = ".netlify/functions/"

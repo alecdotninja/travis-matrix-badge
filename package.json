@@ -1,0 +1,22 @@
+{
+    "name": "travis-matrix-badge",
+    "version": "1.0.0",
+    "description": "A matrix badge for TravisCI",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/alecdotninja/travis-matrix-badge.git"
+    },
+    "author": {
+        "name": "Alec Larsen",
+        "email": "hello@alec.ninja",
+        "url": "https://alec.ninja"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "netlify-lambda": "^1.4.3"
+    },
+    "scripts": {
+        "dev": "netlify-lambda serve functions",
+        "build": "netlify-lambda build functions"
+    }
+}
