@@ -1,5 +1,6 @@
 redirects = [
-  { from = "/", to = "https://github.com/alecdotninja/travis-matrix-badge", status = 302 }
+  { from = "/", to = "https://github.com/alecdotninja/travis-matrix-badge", status = 302 },
+  { from = "/hello", to = "/.netlify/functions/hello", query = { name = ":name"}, status = 200 }
 ]
 
 [build]
