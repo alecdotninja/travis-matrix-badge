@@ -4,6 +4,12 @@
 	status = 302
 
 [[redirects]]
+	from = "/badge-v1.svg"
+	to = "/.netlify/functions/badge-v1"
+	query = { org = ":org", repo = ":repo", branch = ":branch" }
+	status = 200
+
+[[redirects]]
 	from = "/hello"
 	to = "/.netlify/functions/hello"
 	query = { name = ":name" }
