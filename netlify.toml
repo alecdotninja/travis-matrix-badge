@@ -6,13 +6,13 @@
 [[redirects]]
 	from = "/badge-v1.svg"
 	to = "/.netlify/functions/badge-v1"
-	query = { owner = ":owner", project = ":project", branch = ":branch" }
+	query = { owner = ":owner", repo = ":repo", branch = ":branch" }
 	status = 200
 
 [[redirects]]
 	from = "/badge-v1.svg"
 	to = "/.netlify/functions/badge-v1"
-	query = { owner = ":owner", project = ":project" }
+	query = { owner = ":owner", repo = ":repo" }
 	status = 200
 
 [build]
