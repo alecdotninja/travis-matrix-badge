@@ -129,7 +129,7 @@ function drawMatrix(entries, style) {
     const height = y;
 
     return (
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">` +
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
             matrixEntries.join() +
         `</svg>`
     );
