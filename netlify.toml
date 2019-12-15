@@ -6,7 +6,43 @@
 [[redirects]]
 	from = "/badge-v1.svg"
 	to = "/.netlify/functions/badge-v1"
+	query = { owner = ":owner", repo = ":repo", branch = ":branch", columns = ":columns", width = ":width" }
+	status = 200
+
+[[redirects]]
+	from = "/badge-v1.svg"
+	to = "/.netlify/functions/badge-v1"
+	query = { owner = ":owner", repo = ":repo", branch = ":branch", width = ":width" }
+	status = 200
+
+[[redirects]]
+	from = "/badge-v1.svg"
+	to = "/.netlify/functions/badge-v1"
+	query = { owner = ":owner", repo = ":repo", branch = ":branch", columns = ":columns" }
+	status = 200
+
+[[redirects]]
+	from = "/badge-v1.svg"
+	to = "/.netlify/functions/badge-v1"
 	query = { owner = ":owner", repo = ":repo", branch = ":branch" }
+	status = 200
+
+[[redirects]]
+	from = "/badge-v1.svg"
+	to = "/.netlify/functions/badge-v1"
+	query = { owner = ":owner", repo = ":repo", columns = ":columns", width = ":width" }
+	status = 200
+
+[[redirects]]
+	from = "/badge-v1.svg"
+	to = "/.netlify/functions/badge-v1"
+	query = { owner = ":owner", repo = ":repo", width = ":width" }
+	status = 200
+
+[[redirects]]
+	from = "/badge-v1.svg"
+	to = "/.netlify/functions/badge-v1"
+	query = { owner = ":owner", repo = ":repo", columns = ":columns" }
 	status = 200
 
 [[redirects]]

@@ -1,7 +1,7 @@
 const { default: fetch } = require('node-fetch');
 
 exports.handler = async ({ queryStringParameters }) => {
-    const { owner, repo, branch } = queryStringParameters;
+    const { owner, repo, branch, columns, width } = queryStringParameters;
 
     if (!owner || !repo) {
         return renderFailure(400, 'An owner and repo must be specified.');
@@ -13,7 +13,7 @@ exports.handler = async ({ queryStringParameters }) => {
         return renderFailure(404, 'The build status for the provided owner and repo could not be found.');
     }
 
-    return renderMatrix(latestJobs);
+    return renderMatrix(latestJobs, columns, width);
 };
 
 function renderFailure(statusCode, message) {
@@ -31,12 +31,13 @@ function renderFailure(statusCode, message) {
 }
 
 const MATRIX_STYLE = {
-    width: 500,
+    width: 820,
+    columns: 3,
     rowHeight: 36,
-    rowMargin: 4,
+    cellSpacing: 4,
 };
 
-const BASE_MATRIX_ENTRY_STYLE = {
+const GREY_MATRIX_ENTRY_STYLE = {
     padding: 6,
     accentWidth: 6,
     borderWidth: 1,
@@ -46,91 +47,99 @@ const BASE_MATRIX_ENTRY_STYLE = {
     accentColor: "#9d9d9d",
 };
 
-const CUSTOM_MATRIX_ENTRY_STYLE_BY_JOB_STATE = {
-    passed: {
-        backgroundColor: "#deecdc",
-        accentColor: "#39aa56",
-    },
-    failed: {
-        backgroundColor: "#fce8e2",
-        accentColor: "#db4545",
-    },
-    errored: {
-        backgroundColor: "#fce8e2",
-        accentColor: "#db4545",
-    },
-    canceled: {
-        backgroundColor: "#f1f1f1",
-        accentColor: "#9d9d9d",
-    },
-    received: {
-        backgroundColor: "#faf6db",
-        accentColor: "#cdb62c",
-    },
-    queued: {
-        backgroundColor: "#faf6db",
-        accentColor: "#cdb62c",
-    },
-    created: {
-        backgroundColor: "#faf6db",
-        accentColor: "#cdb62c",
-    },
-    booting: {
-        backgroundColor: "#faf6db",
-        accentColor: "#cdb62c",
-    },
-    started: {
-        backgroundColor: "#faf6db",
-        accentColor: "#cdb62c",
-    },
+const RED_MATRIX_ENTRY_STYLE = {
+    ...GREY_MATRIX_ENTRY_STYLE,
+    backgroundColor: "#fce8e2",
+    accentColor: "#db4545",
 };
 
-function renderMatrix(jobs) {
+const YELLOW_MATRIX_ENTRY_STYLE = {
+    ...GREY_MATRIX_ENTRY_STYLE,
+    backgroundColor: "#faf6db",
+    accentColor: "#cdb62c",
+};
+
+const GREEN_MATRIX_ENTRY_STYLE = {
+    ...GREY_MATRIX_ENTRY_STYLE,
+    backgroundColor: "#deecdc",
+    accentColor: "#39aa56",
+};
+
+const MATRIX_ENTRY_STYLE_BY_JOB_STATE = {
+    canceled: GREY_MATRIX_ENTRY_STYLE,
+    failed: RED_MATRIX_ENTRY_STYLE,
+    errored: RED_MATRIX_ENTRY_STYLE,
+    received: YELLOW_MATRIX_ENTRY_STYLE,
+    queued: YELLOW_MATRIX_ENTRY_STYLE,
+    created: YELLOW_MATRIX_ENTRY_STYLE,
+    booting: YELLOW_MATRIX_ENTRY_STYLE,
+    started: YELLOW_MATRIX_ENTRY_STYLE,
+    passed: GREEN_MATRIX_ENTRY_STYLE,
+};
+
+function renderMatrix(jobs, columns = null, width = null) {
     const entries = jobs.map(job => {
         const { state, number, config: { name } } = job;
-        const customStyle = CUSTOM_MATRIX_ENTRY_STYLE_BY_JOB_STATE[state];
 
-        const text = name || `#${number}`;
-
-        const style =
-            customStyle ?
-                { ...BASE_MATRIX_ENTRY_STYLE, ...customStyle } :
-                BASE_MATRIX_ENTRY_STYLE;
-
-        return { text, style };
+        return {
+            text: name || `#${number}`,
+            style: MATRIX_ENTRY_STYLE_BY_JOB_STATE[state] || GREY_MATRIX_ENTRY_STYLE,
+        };
     });
+
+    let thisMatrixStyle = { ...MATRIX_STYLE };
+
+    if (width) {
+        thisMatrixStyle.width = width;
+    }
+
+    if (columns) {
+        thisMatrixStyle.columns = columns;
+    }
 
     return {
         statusCode: 200,
         headers: { 'Content-Type': 'image/svg+xml' },
-        body: drawMatrix(entries, MATRIX_STYLE),
+        body: drawMatrix(entries, thisMatrixStyle),
     };
 }
 
 function drawMatrix(entries, style) {
-    const { width, rowHeight, rowMargin } = style;
+    const { columns, width, rowHeight, cellSpacing } = style;
 
-    const x = 0;
-    let y = 0;
+    const totalcellSpacing = (columns + 1) * cellSpacing;
+    const totalRowWidth = width - totalcellSpacing;
+    const rowWidth = totalRowWidth / columns;
 
-    const matrixEntries = entries.map(({ text, style }) => {
-        const rowX = x + rowMargin;
-        const rowY = y + rowMargin;
+    let buffer = '';
+    let cursorX = 0;
+    let cursorY = 0;
+    
+    entries.forEach(({ text, style }, index) => {
+        const isLastColumn = (index % columns === columns - 1);
 
-        const rowWidth = width - rowX - rowMargin;
+        buffer += drawMatrixEntry(
+            cursorX + cellSpacing,
+            cursorY + cellSpacing,
+            rowWidth,
+            rowHeight,
+            text,
+            style
+        );
 
-        y += rowMargin + rowHeight;
+        cursorX += cellSpacing + rowWidth;
 
-        return drawMatrixEntry(rowX, rowY, rowWidth, rowHeight, text, style);
+        if (isLastColumn) {
+            cursorX = 0;
+            cursorY += cellSpacing + rowHeight;
+        }
     });
 
-    y += rowMargin;
-
-    const height = y;
+    const height = cursorY + cellSpacing;
 
     return (
-        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
-            matrixEntries.join() +
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+            buffer +
         `</svg>`
     );
 }
