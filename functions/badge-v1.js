@@ -1,12 +1,13 @@
 const { default: fetch } = require('node-fetch');
 
-exports.handler = async ({ queryStringParameters }) => {
-    const { owner, repo, branch, columns, width } = queryStringParameters;
+exports.handler = async ({ path, queryStringParameters }) => {
+    const { owner, repo } = extractOwnerAndRepoOptionsFromPath(path) || queryStringParameters;
 
     if (!owner || !repo) {
         return renderFailure(400, 'An owner and repo must be specified.');
     }
 
+    const { branch, columns, width } = queryStringParameters;
     const latestJobs = await fetchLatestJobs(owner, repo, branch);
     
     if (!latestJobs) {
@@ -15,6 +16,22 @@ exports.handler = async ({ queryStringParameters }) => {
 
     return renderMatrix(latestJobs, columns, width);
 };
+
+// /v1/:owner/:repo/matrix.svg
+const PATH_REGEX = /^\/v1\/([^\/]+)\/([^\/]+)\/matrix\.svg$/;
+
+function extractOwnerAndRepoOptionsFromPath(path) {
+    const match = PATH_REGEX.exec(path);
+
+    if (match) {
+        return {
+            owner: match[1],
+            repo: match[2],
+        };
+    } else {
+        return null;
+    }
+}
 
 function renderFailure(statusCode, message) {
     return {

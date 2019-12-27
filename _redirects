@@ -1,0 +1,6 @@
+# homepage
+/   https://github.com/alecdotninja/travis-matrix-badge     302
+
+# v1
+/badge-v1.svg			    /.netlify/functions/badge-v1	200
+/v1/:owner/:repo/matrix.svg	/.netlify/functions/badge-v1	200

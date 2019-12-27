@@ -6,16 +6,16 @@ A public instance hosted by [Netlify](https://www.netlify.com) is located at [`t
 
 ## Demo
 
-Here is how it looks for [the TravisCI configuration](https://github.com/alecdotninja/firstlast-pg/blob/master/.travis.yml) in [firstlast-pg](github.com/alecdotninja/firstlast-pg):
+Here is how it looks for [the TravisCI configuration](https://github.com/alecdotninja/firstlast-pg/blob/master/.travis.yml) in [firstlast-pg](https://github.com/alecdotninja/firstlast-pg):
 
-[![Build Matrix](https://travis-matrix-badge.alec.ninja/badge-v1.svg?owner=alecdotninja&repo=firstlast-pg&branch=master)](https://travis-ci.org/alecdotninja/firstlast-pg)
+[![Build Matrix](https://travis-matrix-badge.alec.ninja/v1/alecdotninja/firstlast-pg/matrix.svg?branch=master)](https://travis-ci.org/alecdotninja/firstlast-pg)
 
 
 ## Getting Started
 
-For a project at `https://travis-ci.org/OWNER/REPO`, the matrix can be displayed with is markdown:
+For a project at `https://travis-ci.org/:owner/:repo`, the matrix can be displayed with is markdown:
 ```markdown
-[![Build Matrix](https://travis-matrix-badge.alec.ninja/badge-v1.svg?owner=OWNER&repo=REPO)](https://travis-ci.org/OWNER/REPO)
+[![Build Matrix](https://travis-matrix-badge.alec.ninja/v1/:owner/:repo/matrix.svg)](https://travis-ci.org/:owner/:repo)
 ```
 
 For best results, make sure that you have specified [names for all of the jobs in your build](https://docs.travis-ci.com/user/build-stages/#naming-your-jobs-within-build-stages).
@@ -25,15 +25,13 @@ _**Note:** The examples here use the public instance at [`travis-matrix-badge.al
 
 ## Options
 
-The table below contains the options for `badge-v1.svg`. They are all specified as query paramaters.
+The matrix can be customized with the following query paramaters.
 
-|   Option  | Required | Default            | Description                                                                    |
-|:---------:|----------|--------------------|--------------------------------------------------------------------------------|
-| `owner`   | Yes      | _none_             | The owner of the repo (i.e. the `OWNER` in `https://travis-ci.org/OWNER/REPO`) |
-| `repo`    | Yes      | _none_             | The repo (i.e. the `REPO` in `https://travis-ci.org/OWNER/REPO`)               |
-| `branch`  | No       | _default for repo_ | The branch whose latest build status to display                                |
-| `columns` | No       | `3`                | The number of columns to show in the matrix                                    |
-| `width`   | No       | `820`              | The width (in pixels) of the matrix                                            |
+|   Option  | Default            | Description                                     |
+|:---------:|--------------------|-------------------------------------------------|
+| `branch`  | _default for repo_ | The branch whose latest build status to display |
+| `columns` | `3`                | The number of columns to show in the matrix     |
+| `width`   | `820`              | The width (in pixels) of the matrix             |
 
 
 ## Development
@@ -45,8 +43,8 @@ After checking out the repo, run `npm install` to get setup.
 
 Running `npm run dev` will start a local server at [http://localhost:9000](http://localhost:9000) that can be used for testing.
 Each of the files in the [functions directory](functions) is the entry point for a Netlify Function.
-In production [rewrite rules](netlify.toml) are used to canonicalize and simplify the URL;
-however, in development, the full path is required (e.g. [http://localhost:9000/.netlify/badge-v1](http://localhost:9000/.netlify/badge-v1) for [`functions/badge-v1.js`](functions/badge-v1.js)).
+In production [rewrite rules](_redirects) are used to canonicalize and simplify the URL;
+however, in development, the full path is required (e.g. [http://localhost:9000/.netlify/functions/badge-v1](http://localhost:9000/.netlify/functions/badge-v1) for [`functions/badge-v1.js`](functions/badge-v1.js)).
 
 If you would to locally build a copy of the functions suitable for deployment directly to AWS Lambda, you can run `npm run build`. The compiled functions will appear in `.netlify/functions`. For `travis-matrix-badge.alec.ninja`, [this is all handled by Netlify](netlify.toml).
 
